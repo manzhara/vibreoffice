@@ -931,7 +931,6 @@ function KeyHandler_KeyPressed(oEvent) as boolean
 	End If
 
     KeyHandler_KeyPressed = bConsumeInput
-	busy = False        
 End Function
 
 Function KeyHandler_KeyReleased(oEvent) As boolean
