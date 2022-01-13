@@ -106,6 +106,7 @@ const M_VISUAL_LINE = 3
 const M_DISABLED = 254
 const M_BAD = 255
 global MODE as integer
+global TEST as integer
 global OLD_MODE as integer
 
 global VIEW_CURSOR as object
@@ -326,7 +327,7 @@ Function getModeName(m)
 	dim sModeName as string
 	Select Case m
 		Case M_NORMAL:
-			sModeName = "NORMAL"
+			sModeName = CStr(TEST)
 		Case M_INSERT:
 			sModeName = "INSERT"
 		Case M_VISUAL:
@@ -346,7 +347,7 @@ End Function
 ' Returns key by non-zero code
 Function getLatinKeyCharByCode(oEvent)
     dim keyChar
-    keyChar = asc(0)
+	keyChar = asc(0)
     If (oEvent.modifiers and 1) = 0 Then
         Select Case oEvent.keyCode
             case 1311: 
@@ -551,7 +552,7 @@ Function getLatinKeyCharByRus(oEvent)
     dim keyChar
     keyChar = asc(0)
     If (oEvent.modifiers and 1) = 0 Then
-        Select Case oEvent.keyChar
+        Select Case oEvent.keyCode
             case "?":
                 keyChar = "["
             case "?":
@@ -566,6 +567,8 @@ Function getLatinKeyCharByRus(oEvent)
                 keyChar = "."
             case ".":
                 keyChar = "."                
+            case 521:
+                keyChar = "о"
         End Select
     Else
         Select Case oEvent.keyChar
@@ -1319,23 +1322,24 @@ Function ProcessModeKey(oEvent)
     bMatched = True
     keyChar = getLatinKey(oEvent)
 	oTextCursor = getTextCursor()
+	TEST = oEvent.KeyChar
     Select Case oEvent.KeyChar
         ' Insert modes
-        Case "i", "a", "I", "A", "o", "O":
+        Case "i", "ш", "a", "ф", "I", "Ш", "A", "Ф", "o", "щ", "O", "Щ":
 			If APP() <> "CALC" Then
-				If oEvent.KeyChar = "a" And NOT oTextCursor.isEndOfParagraph() Then getCursor().goRight(1, False)
-				If oEvent.KeyChar = "I" Then ProcessMovementKey("^")
-				If oEvent.KeyChar = "A" Then ProcessMovementKey("$")
+				If oEvent.KeyChar = "ф" Or "a" And NOT oTextCursor.isEndOfParagraph() Then getCursor().goRight(1, False)
+				If oEvent.KeyChar = "I" Or oEvent.KeyChar = "Ш" Then ProcessMovementKey("^")
+				If oEvent.KeyChar = "A" Or oEvent.KeyChar = "Ф" Then ProcessMovementKey("$")
 			Else
-				If oEvent.KeyChar = "I" Then 
+				If oEvent.KeyChar = "I" Or oEvent.KeyChar = "Ш" Then 
 					simulate_KeyPress_Char("F2")
 					simulate_KeyPress_Char("HOME")
 				End If
-				If oEvent.KeyChar = "a" Then simulate_KeyPress_Char("F2")
-				If oEvent.KeyChar = "A" Then simulate_KeyPress_Char("F2") 
+				If oEvent.KeyChar = "a" Or oEvent.KeyChar = "ф" Then simulate_KeyPress_Char("F2")
+				If oEvent.KeyChar = "A" Or oEvent.KeyChar = "Ф" Then simulate_KeyPress_Char("F2") 
 			End If
 
-            If KeyChar = "o" Then
+            If KeyChar = "o" Or oEvent.KeyChar = "щ" Then
 				If APP() <> "CALC" Then
 				    ProcessMovementKey("$")
                 	ProcessMovementKey("l")
@@ -1350,7 +1354,7 @@ Function ProcessModeKey(oEvent)
 				End If
             End If
 
-            If KeyChar = "O" Then
+            If KeyChar = "O" Or oEvent.KeyChar = "Щ" Then
 				If APP() <> "CALC" Then
 				    ProcessMovementKey("^")
 					getCursor().setString(chr(13))
@@ -1365,9 +1369,9 @@ Function ProcessModeKey(oEvent)
             End If
 
             gotoMode(M_INSERT)
-        Case "v":
+        Case "v", "м":
             gotoMode(M_VISUAL)
-        Case "V":
+        Case "V", "М":
             gotoMode(M_VISUAL_LINE)
         Case Else:
             bMatched = False
@@ -1977,7 +1981,7 @@ Function ProcessMovementKey(keyChar, Optional bExpand, Optional keyModifiers, Op
         bSetCursor = False
 
     ' Basic movement
-    ElseIf keyChar = "l" Then
+    ElseIf keyChar = "l" or keyChar = "д" Then
     	 If APP() = "CALC" Then
 	       	'Print "This is Calc"
 			If bExpand Then simulate_KeyPress_Char("RIGHT", "SHIFT") Else simulate_KeyPress_Char("RIGHT")
@@ -1985,7 +1989,7 @@ Function ProcessMovementKey(keyChar, Optional bExpand, Optional keyModifiers, Op
         oTextCursor.goRight(1, bExpand)
         End If
 
-    ElseIf keyChar = "h" Then
+    ElseIf keyChar = "h" or keyChar = "р" Then
     	 If APP() = "CALC" Then
 	       	'Print "This is Calc"
 			If bExpand Then simulate_KeyPress_Char("LEFT", "SHIFT") Else simulate_KeyPress_Char("LEFT")
@@ -1995,7 +1999,7 @@ Function ProcessMovementKey(keyChar, Optional bExpand, Optional keyModifiers, Op
 
     ' oTextCursor.goUp and oTextCursor.goDown SHOULD work, but doesn't (I dont know why).
     ' So this is a weird hack
-    ElseIf keyChar = "k" Then
+    ElseIf keyChar = "k" or keyChar = "л" Then
         'oTextCursor.goUp(1, False)
         If APP() = "CALC" Then
 	       	'Print "This is Calc"
@@ -2066,7 +2070,7 @@ Function ProcessMovementKey(keyChar, Optional bExpand, Optional keyModifiers, Op
         bSetCursor = False
         End If
 
-    ElseIf keyChar = "j" Then
+    ElseIf keyChar = "j" or keyChar = "о" Then
         If APP() = "CALC" Then
 	       	'Print "This is Calc"
 			If bExpand Then simulate_KeyPress_Char("DOWN", "SHIFT") Else simulate_KeyPress_Char("DOWN")
@@ -2112,12 +2116,12 @@ Function ProcessMovementKey(keyChar, Optional bExpand, Optional keyModifiers, Op
         End If
     ' ----------
 
-    ElseIf keyChar = "J" Then
+    ElseIf keyChar = "J" or keyChar = "О" Then
 	' Select Previous Sheet'
         If APP() = "CALC" Then
 			simulate_KeyPress_Char("PAGEUP", "CTRL")
         End If
-    ElseIf keyChar = "K" Then
+    ElseIf keyChar = "K"  or keyChar = "Л" Then
 	' Select Next Sheet'
         If APP() = "CALC" Then
 			simulate_KeyPress_Char("PAGEDOWN", "CTRL")
