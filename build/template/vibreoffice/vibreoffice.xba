@@ -330,7 +330,7 @@ Function getModeName(m)
 	dim sModeName as string
 	Select Case m
 		Case M_NORMAL:
-			sModeName = CStr(TEST)
+				sModeName = &quot;NORMAL&quot;
 		Case M_INSERT:
 			sModeName = &quot;INSERT&quot;
 		Case M_VISUAL:
@@ -2221,7 +2221,7 @@ Function ProcessMovementKey(keyChar, Optional bExpand, Optional keyModifiers, Op
 			If bExpand Then simulate_KeyPress_Char(&quot;DOWN&quot;, &quot;SHIFT&quot;, &quot;CTRL&quot;) Else simulate_KeyPress_Char(&quot;DOWN&quot;, &quot;CTRL&quot;)
 		End If
 
-    ElseIf keyChar = &quot;w&quot; or keyChar = &quot;W&quot; Then
+    ElseIf keyChar = &quot;w&quot; or keyChar = &quot;W&quot; or oEvent.KeyChar = &quot;ц&quot; Then
         If APP() &lt;&gt; &quot;CALC&quot; Then
         &apos; For the case when the user enters &quot;cw&quot;:
         If getSpecial() = &quot;c&quot; Then
@@ -2273,7 +2273,7 @@ Function ProcessMovementKey(keyChar, Optional bExpand, Optional keyModifiers, Op
 		Else
 			If bExpand Then simulate_KeyPress_Char(&quot;RIGHT&quot;, &quot;SHIFT&quot;, &quot;CTRL&quot;) Else simulate_KeyPress_Char(&quot;RIGHT&quot;, &quot;CTRL&quot;)
         End If
-    ElseIf keyChar = &quot;b&quot; or keyChar = &quot;B&quot; Then
+ElseIf keyChar = &quot;b&quot; or keyChar = &quot;B&quot; or oEvent.KeyChar = &quot;и&quot; Then
         If APP() &lt;&gt; &quot;CALC&quot; Then
         &apos; When the user enters &quot;b&quot;, &quot;cb&quot;, or &quot;db&quot;:
 
@@ -2350,7 +2350,7 @@ Function ProcessMovementKey(keyChar, Optional bExpand, Optional keyModifiers, Op
 		Else
 			If bExpand Then simulate_KeyPress_Char(&quot;LEFT&quot;, &quot;SHIFT&quot;, &quot;CTRL&quot;) Else simulate_KeyPress_Char(&quot;LEFT&quot;, &quot;CTRL&quot;)
         End If
-    ElseIf keyChar = &quot;e&quot; Then
+    ElseIf keyChar = &quot;e&quot; or oEvent.KeyChar = &quot;у&quot; Then
         If APP() &lt;&gt; &quot;CALC&quot; Then
         &apos; When the user enters &quot;e&quot;, &quot;ce&quot;, or &quot;de&quot;:
 
